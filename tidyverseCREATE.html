@@ -183,11 +183,11 @@ The following object is masked from 'package:scales':
 </div>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>In this vignette, we will explore how to use several TidyVerse functions to clean and analyze a dataset. The data used in this example is related to presidential polls.</p>
+<p>In this vignette, we will explore how to use several TidyVerse functions to clean and analyze a dataset. The data used in this example is related to presidential polls. We will load the data, clean it, and analyze it using various TidyVerse functions. We will create visualizations to explore the trends in poll percentages for different candidates over time. The visualizations will include line plots, smoothed lines, stacked area plots, grouped bar plots, faceted line plots, faceted area plots, faceted bar plots, heatmaps, box plots, violin plots, density plots, and a map visualization showing the leading candidate by state. By leveraging the power of the TidyVerse, we can efficiently explore and analyze complex datasets, gaining valuable insights and informing data-driven decisions.</p>
 </section>
 <section id="loading-and-exploring-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="loading-and-exploring-the-data">Loading and Exploring the Data</h2>
-<p>First, we load the dataset and get a sense of its structure.</p>
+<p>First, we load the dataset and get a sense of its structure. We will then proceed to clean the data by selecting relevant columns and filtering out any missing values.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the dataset</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>raw_polls <span class="ot">&lt;-</span> <span class="fu">getURL</span>(<span class="st">"https://raw.githubusercontent.com/spacerome/TidyVerseCREATE/refs/heads/main/president_general_polls_2016.csv"</span>)</span>
@@ -265,7 +265,7 @@ $ timestamp        &lt;chr&gt; "09:35:33  8 Nov 2016", "09:35:33  8 Nov 2016", "
 </section>
 <section id="data-cleaning" class="level2">
 <h2 class="anchored" data-anchor-id="data-cleaning">Data Cleaning</h2>
-<p>Next, we will clean the data by selecting relevant columns and filtering rows.</p>
+<p>Next, we will clean the data by selecting relevant columns and filtering rows. We will remove any missing data to ensure the dataset is ready for analysis.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select relevant columns and remove any missing data</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>polls_clean <span class="ot">&lt;-</span> polls_data <span class="sc">%&gt;%</span></span>
@@ -294,7 +294,7 @@ $ timestamp        &lt;chr&gt; "09:35:33  8 Nov 2016", "09:35:33  8 Nov 2016", "
 </section>
 <section id="analyzing-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="analyzing-the-data">Analyzing the Data</h2>
-<p>We will now analyze the data to visualize how different candidates are performing over time.</p>
+<p>We will now analyze the data to visualize how different candidates are performing over time. We will create various visualizations to explore the trends in poll percentages for each candidate. The visualizations will include line plots, smoothed lines, stacked area plots, grouped bar plots, faceted line plots, faceted area plots, faceted bar plots, heatmaps, box plots, violin plots, density plots, and a map visualization showing the leading candidate by state.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshape the data for visualization</span></span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>polls_long <span class="ot">&lt;-</span> polls_clean <span class="sc">%&gt;%</span></span>
@@ -333,7 +333,7 @@ $ timestamp        &lt;chr&gt; "09:35:33  8 Nov 2016", "09:35:33  8 Nov 2016", "
 </section>
 <section id="analyzing-the-data-with-smoothed-lines" class="level2">
 <h2 class="anchored" data-anchor-id="analyzing-the-data-with-smoothed-lines">Analyzing the Data with Smoothed Lines</h2>
-<p>We will now analyze the data using smoothed lines to better visualize trends.</p>
+<p>We will now analyze the data using smoothed lines to better visualize trends. The smoothed lines provide a clearer view of the overall trend in poll percentages over time for each candidate.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshape the data for visualization</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>polls_long <span class="ot">&lt;-</span> polls_clean <span class="sc">%&gt;%</span></span>
@@ -382,7 +382,7 @@ $ timestamp        &lt;chr&gt; "09:35:33  8 Nov 2016", "09:35:33  8 Nov 2016", "
 </section>
 <section id="analyzing-the-data-with-a-stacked-area-plot" class="level2">
 <h2 class="anchored" data-anchor-id="analyzing-the-data-with-a-stacked-area-plot">Analyzing the Data with a Stacked Area Plot</h2>
-<p>We will now analyze the data using a stacked area plot to visualize the overall distribution of poll percentages over time.</p>
+<p>We will now analyze the data using a stacked area plot to visualize the overall distribution of poll percentages over time. The stacked area plot provides a clear view of how the poll percentages of different candidates have evolved over time.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshape the data for visualization</span></span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -431,7 +431,7 @@ $ timestamp        &lt;chr&gt; "09:35:33  8 Nov 2016", "09:35:33  8 Nov 2016", "
 </section>
 <section id="analyzing-the-data-with-a-grouped-bar-plot" class="level2">
 <h2 class="anchored" data-anchor-id="analyzing-the-data-with-a-grouped-bar-plot">Analyzing the Data with a Grouped Bar Plot</h2>
-<p>We will now analyze the data using a grouped bar plot to compare the poll percentages of different candidates over time.</p>
+<p>We will now analyze the data using a grouped bar plot to compare the poll percentages of different candidates over time. The grouped bar plot provides a clear view of how the poll percentages of different candidates have evolved over time.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshape the data for visualization</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -480,7 +480,7 @@ $ timestamp        &lt;chr&gt; "09:35:33  8 Nov 2016", "09:35:33  8 Nov 2016", "
 </section>
 <section id="analyzing-the-data-with-a-faceted-line-plot" class="level2">
 <h2 class="anchored" data-anchor-id="analyzing-the-data-with-a-faceted-line-plot">Analyzing the Data with a Faceted Line Plot</h2>
-<p>We will now analyze the data using a faceted line plot to compare the poll percentages of different candidates over time.</p>
+<p>We will now analyze the data using a faceted line plot to compare the poll percentages of different candidates over time. The faceted line plot provides a clear view of how the poll percentages of different candidates have evolved over time.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshape the data for visualization</span></span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -530,7 +530,7 @@ $ timestamp        &lt;chr&gt; "09:35:33  8 Nov 2016", "09:35:33  8 Nov 2016", "
 </section>
 <section id="analyzing-the-data-with-a-faceted-area-plot" class="level2">
 <h2 class="anchored" data-anchor-id="analyzing-the-data-with-a-faceted-area-plot">Analyzing the Data with a Faceted Area Plot</h2>
-<p>We will now analyze the data using a faceted area plot to compare the poll percentages of different candidates over time.</p>
+<p>We will now analyze the data using a faceted area plot to compare the poll percentages of different candidates over time. The faceted area plot provides a clear view of how the poll percentages of different candidates have evolved over time.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshape the data for visualization</span></span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -580,7 +580,7 @@ $ timestamp        &lt;chr&gt; "09:35:33  8 Nov 2016", "09:35:33  8 Nov 2016", "
 </section>
 <section id="analyzing-the-data-with-a-faceted-bar-plot" class="level2">
 <h2 class="anchored" data-anchor-id="analyzing-the-data-with-a-faceted-bar-plot">Analyzing the Data with a Faceted Bar Plot</h2>
-<p>We will now analyze the data using a faceted bar plot to compare the poll percentages of different candidates over time.</p>
+<p>We will now analyze the data using a faceted bar plot to compare the poll percentages of different candidates over time. The faceted bar plot provides a clear view of how the poll percentages of different candidates have evolved over time.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshape the data for visualization</span></span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -630,7 +630,7 @@ $ timestamp        &lt;chr&gt; "09:35:33  8 Nov 2016", "09:35:33  8 Nov 2016", "
 </section>
 <section id="analyzing-the-data-with-a-heatmap" class="level2">
 <h2 class="anchored" data-anchor-id="analyzing-the-data-with-a-heatmap">Analyzing the Data with a Heatmap</h2>
-<p>We will now analyze the data using a heatmap to visualize the poll percentages of different candidates over time.</p>
+<p>We will now analyze the data using a heatmap to visualize the poll percentages of different candidates over time. The heatmap provides a clear view of how the poll percentages of different candidates have evolved over time.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshape the data for visualization</span></span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -773,10 +773,11 @@ $ timestamp        &lt;chr&gt; "09:35:33  8 Nov 2016", "09:35:33  8 Nov 2016", "
 </div>
 </div>
 </div>
+<p>This example demonstrates how to use TidyVerse functions to clean, summarize, and visualize data using the <code>dplyr</code> and <code>ggplot2</code> packages. The process makes it easy to transform raw data into insightful visualizations and summaries. By leveraging the power of the TidyVerse, analysts can efficiently explore and analyze complex datasets, gaining valuable insights and informing data-driven decisions. The flexibility and ease of use of the TidyVerse tools make them essential for data analysis and visualization tasks.</p>
 </section>
 <section id="analyzing-the-data-with-a-density-plot" class="level2">
 <h2 class="anchored" data-anchor-id="analyzing-the-data-with-a-density-plot">Analyzing the Data with a Density Plot</h2>
-<p>We will now analyze the data using a density plot to compare the distribution of poll percentages for different candidates.</p>
+<p>We will now analyze the data using a density plot to compare the distribution of poll percentages for different candidates. The density plot provides a clear view of the distribution of poll percentages over time for each candidate.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshape the data for visualization</span></span>
 <span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -823,7 +824,7 @@ $ timestamp        &lt;chr&gt; "09:35:33  8 Nov 2016", "09:35:33  8 Nov 2016", "
 </section>
 <section id="analyzing-the-states-with-the-highest-poll-percentages" class="level2">
 <h2 class="anchored" data-anchor-id="analyzing-the-states-with-the-highest-poll-percentages">Analyzing the States with the Highest Poll Percentages</h2>
-<p>We will now analyze the states with the highest poll percentages for each candidate.</p>
+<p>We will now analyze the states with the highest poll percentages for each candidate. We will summarize the data to identify the states where each candidate is leading based on the poll data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the poll data to get the candidate leading in each state</span></span>
 <span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>polls_state_summary <span class="ot">&lt;-</span> polls_data <span class="sc">%&gt;%</span></span>
@@ -869,6 +870,7 @@ $ timestamp        &lt;chr&gt; "09:35:33  8 Nov 2016", "09:35:33  8 Nov 2016", "
 </div>
 </div>
 </div>
+<p>This map shows the states where each candidate is leading based on the poll data. The data also shows that the leading candidate varies by state, with some states favoring Clinton, others favoring Trump, and some showing a tie. The map visualization provides a clear overview of the distribution of poll percentages across different states.</p>
 </section>
 <section id="findings" class="level2">
 <h2 class="anchored" data-anchor-id="findings">Findings</h2>

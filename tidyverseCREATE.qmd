@@ -33,10 +33,11 @@ library(mapproj)
 
 ## Introduction
 
-In this vignette, we will explore how to use several TidyVerse functions to clean and analyze a dataset. The data used in this example is related to presidential polls.
+In this vignette, we will explore how to use several TidyVerse functions to clean and analyze a dataset. The data used in this example is related to presidential polls. We will load the data, clean it, and analyze it using various TidyVerse functions. We will create visualizations to explore the trends in poll percentages for different candidates over time. The visualizations will include line plots, smoothed lines, stacked area plots, grouped bar plots, faceted line plots, faceted area plots, faceted bar plots, heatmaps, box plots, violin plots, density plots, and a map visualization showing the leading candidate by state. By leveraging the power of the TidyVerse, we can efficiently explore and analyze complex datasets, gaining valuable insights and informing data-driven decisions.
 
 ## Loading and Exploring the Data
-First, we load the dataset and get a sense of its structure.
+
+First, we load the dataset and get a sense of its structure. We will then proceed to clean the data by selecting relevant columns and filtering out any missing values.
 
 ```{r load-data}
 # Load the dataset
@@ -52,7 +53,7 @@ glimpse(polls_data)
 
 ## Data Cleaning
 
-Next, we will clean the data by selecting relevant columns and filtering rows.
+Next, we will clean the data by selecting relevant columns and filtering rows. We will remove any missing data to ensure the dataset is ready for analysis. 
 
 ```{r data-cleaning}
 # Select relevant columns and remove any missing data
@@ -64,7 +65,8 @@ polls_clean <- polls_data %>%
 summary(polls_clean)
 ```
 ## Analyzing the Data
-We will now analyze the data to visualize how different candidates are performing over time.
+
+We will now analyze the data to visualize how different candidates are performing over time. We will create various visualizations to explore the trends in poll percentages for each candidate. The visualizations will include line plots, smoothed lines, stacked area plots, grouped bar plots, faceted line plots, faceted area plots, faceted bar plots, heatmaps, box plots, violin plots, density plots, and a map visualization showing the leading candidate by state.
 
 ```{r data-analysis}
 
@@ -95,7 +97,7 @@ ggplot(polls_long, aes(x = startdate, y = poll_percentage, color = candidate)) +
 
 ## Analyzing the Data with Smoothed Lines
 
-We will now analyze the data using smoothed lines to better visualize trends.
+We will now analyze the data using smoothed lines to better visualize trends. The smoothed lines provide a clearer view of the overall trend in poll percentages over time for each candidate.
 
 ```{r data-analysis-smooth-plot}
 
@@ -134,7 +136,7 @@ ggplot(polls_weekly, aes(x = week, y = avg_poll_percentage, color = candidate)) 
 
 ## Analyzing the Data with a Stacked Area Plot
 
-We will now analyze the data using a stacked area plot to visualize the overall distribution of poll percentages over time.
+We will now analyze the data using a stacked area plot to visualize the overall distribution of poll percentages over time. The stacked area plot provides a clear view of how the poll percentages of different candidates have evolved over time.
 
 ```{r data-analysis-stacked-area-plot}
 
@@ -176,7 +178,7 @@ ggplot(polls_weekly, aes(x = week, y = avg_poll_percentage, fill = candidate)) +
 
 ## Analyzing the Data with a Grouped Bar Plot
 
-We will now analyze the data using a grouped bar plot to compare the poll percentages of different candidates over time.
+We will now analyze the data using a grouped bar plot to compare the poll percentages of different candidates over time. The grouped bar plot provides a clear view of how the poll percentages of different candidates have evolved over time. 
 
 ```{r data-analysis-grouped-bar-plot}
 
@@ -218,7 +220,7 @@ ggplot(polls_weekly, aes(x = week, y = avg_poll_percentage, fill = candidate)) +
 
 ## Analyzing the Data with a Faceted Line Plot
 
-We will now analyze the data using a faceted line plot to compare the poll percentages of different candidates over time.
+We will now analyze the data using a faceted line plot to compare the poll percentages of different candidates over time. The faceted line plot provides a clear view of how the poll percentages of different candidates have evolved over time.
 
 ```{r data-analysis-faceted-line-plot}
 
@@ -261,7 +263,7 @@ ggplot(polls_weekly, aes(x = week, y = avg_poll_percentage, color = candidate)) 
 
 ## Analyzing the Data with a Faceted Area Plot
 
-We will now analyze the data using a faceted area plot to compare the poll percentages of different candidates over time.
+We will now analyze the data using a faceted area plot to compare the poll percentages of different candidates over time. The faceted area plot provides a clear view of how the poll percentages of different candidates have evolved over time.
 
 ```{r data-analysis-faceted-area-plot}
 
@@ -304,7 +306,7 @@ ggplot(polls_weekly, aes(x = week, y = avg_poll_percentage, fill = candidate)) +
 
 ## Analyzing the Data with a Faceted Bar Plot
 
-We will now analyze the data using a faceted bar plot to compare the poll percentages of different candidates over time.
+We will now analyze the data using a faceted bar plot to compare the poll percentages of different candidates over time. The faceted bar plot provides a clear view of how the poll percentages of different candidates have evolved over time.
 
 ```{r data-analysis-faceted-bar-plot}
 
@@ -347,7 +349,7 @@ ggplot(polls_weekly, aes(x = week, y = avg_poll_percentage, fill = candidate)) +
 
 ## Analyzing the Data with a Heatmap
 
-We will now analyze the data using a heatmap to visualize the poll percentages of different candidates over time.
+We will now analyze the data using a heatmap to visualize the poll percentages of different candidates over time. The heatmap provides a clear view of how the poll percentages of different candidates have evolved over time. 
 
 ```{r data-analysis-heatmap}
 
@@ -388,7 +390,7 @@ ggplot(polls_weekly, aes(x = week, y = candidate, fill = avg_poll_percentage)) +
 
 ## Analyzing the Data with a Box Plot
 
-We will now analyze the data using a box plot to compare the distribution of poll percentages for different candidates.
+We will now analyze the data using a box plot to compare the distribution of poll percentages for different candidates. 
 
 ```{r data-analysis-box-plot}
 
@@ -430,7 +432,7 @@ ggplot(polls_weekly, aes(x = candidate, y = avg_poll_percentage, fill = candidat
 
 ## Analyzing the Data with a Violin Plot
 
-We will now analyze the data using a violin plot to compare the distribution of poll percentages for different candidates.
+We will now analyze the data using a violin plot to compare the distribution of poll percentages for different candidates. 
 
 ```{r data-analysis-violin-plot}
 
@@ -470,9 +472,11 @@ ggplot(polls_weekly, aes(x = candidate, y = avg_poll_percentage, fill = candidat
 
 ```
 
+This example demonstrates how to use TidyVerse functions to clean, summarize, and visualize data using the `dplyr` and `ggplot2` packages. The process makes it easy to transform raw data into insightful visualizations and summaries. By leveraging the power of the TidyVerse, analysts can efficiently explore and analyze complex datasets, gaining valuable insights and informing data-driven decisions. The flexibility and ease of use of the TidyVerse tools make them essential for data analysis and visualization tasks.
+
 ## Analyzing the Data with a Density Plot
 
-We will now analyze the data using a density plot to compare the distribution of poll percentages for different candidates.
+We will now analyze the data using a density plot to compare the distribution of poll percentages for different candidates. The density plot provides a clear view of the distribution of poll percentages over time for each candidate.
 
 ```{r data-analysis-density-plot}
 
@@ -512,7 +516,7 @@ ggplot(polls_weekly, aes(x = avg_poll_percentage, fill = candidate)) +
 
 ## Analyzing the States with the Highest Poll Percentages
 
-We will now analyze the states with the highest poll percentages for each candidate.
+We will now analyze the states with the highest poll percentages for each candidate. We will summarize the data to identify the states where each candidate is leading based on the poll data.
 
 ```{r maps}
 
@@ -554,6 +558,7 @@ ggplot(map_data, aes(x = long, y = lat, group = group, fill = leading_candidate)
   coord_map()
 
 ```
+This map shows the states where each candidate is leading based on the poll data. The data also shows that the leading candidate varies by state, with some states favoring Clinton, others favoring Trump, and some showing a tie. The map visualization provides a clear overview of the distribution of poll percentages across different states.
 
 ## Findings
 
