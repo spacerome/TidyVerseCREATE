@@ -1,0 +1,565 @@
+---
+title: "Data607: Tidyverse Create"
+author: "Anthony Josue Roman"
+format: html
+editor: visual
+---
+
+```{r libraries}
+
+library(tidyverse)
+library(RCurl)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(stringr)
+library(lubridate)
+library(ggplot2)
+library(ggthemes)
+library(ggExtra)
+library(ggpubr)
+library(gganimate)
+library(ggplot2movies)
+library(scales)
+library(maps)
+library(sf)
+library(viridis)
+library(ggsci)
+library(mapproj)
+
+```
+
+
+## Introduction
+
+In this vignette, we will explore how to use several TidyVerse functions to clean and analyze a dataset. The data used in this example is related to presidential polls.
+
+## Loading and Exploring the Data
+First, we load the dataset and get a sense of its structure.
+
+```{r load-data}
+# Load the dataset
+raw_polls <- getURL("https://raw.githubusercontent.com/spacerome/TidyVerseCREATE/refs/heads/main/president_general_polls_2016.csv")
+polls_data <- read_csv(raw_polls)
+
+# Display the first few rows
+head(polls_data)
+
+# Check the structure of the dataset
+glimpse(polls_data)
+```
+
+## Data Cleaning
+
+Next, we will clean the data by selecting relevant columns and filtering rows.
+
+```{r data-cleaning}
+# Select relevant columns and remove any missing data
+polls_clean <- polls_data %>%
+  select(pollster, state, startdate, enddate, rawpoll_clinton, rawpoll_trump, rawpoll_johnson) %>%
+  filter(!is.na(rawpoll_clinton) & !is.na(rawpoll_trump) & !is.na(rawpoll_johnson))
+
+# Display a summary of the cleaned data
+summary(polls_clean)
+```
+## Analyzing the Data
+We will now analyze the data to visualize how different candidates are performing over time.
+
+```{r data-analysis}
+
+# Reshape the data for visualization
+polls_long <- polls_clean %>%
+  pivot_longer(cols = starts_with("rawpoll_"), names_to = "candidate", values_to = "poll_percentage") %>%
+  mutate(candidate = str_replace(candidate, "rawpoll_", ""))  # Clean up candidate names
+
+# Convert date columns to Date type for plotting
+polls_long$startdate <- as.Date(polls_long$startdate, format = "%m/%d/%Y")
+
+# Plot the trend of poll percentages over time for each candidate
+ggplot(polls_long, aes(x = startdate, y = poll_percentage, color = candidate)) +
+  geom_line(size = 1.2) +
+  theme_minimal() +
+  scale_color_manual(values = c("clinton" = "blue", "trump" = "red", "johnson" = "gold")) +
+  scale_y_continuous(labels = percent_format(scale = 1)) +  # Format y-axis as percentages
+  labs(title = "Poll Percentage Trend Over Time by Candidate",
+       x = "Date",
+       y = "Poll Percentage",
+       color = "Candidate") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "top"
+  )
+
+```
+
+## Analyzing the Data with Smoothed Lines
+
+We will now analyze the data using smoothed lines to better visualize trends.
+
+```{r data-analysis-smooth-plot}
+
+# Reshape the data for visualization
+polls_long <- polls_clean %>%
+  pivot_longer(cols = starts_with("rawpoll_"), names_to = "candidate", values_to = "poll_percentage") %>%
+  mutate(candidate = str_replace(candidate, "rawpoll_", ""))  # Clean up candidate names
+
+# Convert date columns to Date type for plotting
+polls_long$startdate <- as.Date(polls_long$startdate, format = "%m/%d/%Y")
+
+# Aggregate data by week to reduce clutter
+polls_weekly <- polls_long %>%
+  group_by(candidate, week = cut(startdate, "week")) %>%
+  summarise(avg_poll_percentage = mean(poll_percentage, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(week = as.Date(week))
+
+# Plot the smoothed trend of poll percentages over time for each candidate
+ggplot(polls_weekly, aes(x = week, y = avg_poll_percentage, color = candidate)) +
+  geom_line(size = 1.2) +
+  geom_smooth(se = FALSE, linetype = "dashed") +
+  theme_minimal() +
+  scale_color_manual(values = c("clinton" = "blue", "trump" = "red", "johnson" = "gold")) +
+  scale_y_continuous(labels = percent_format(scale = 1)) +  # Format y-axis as percentages
+  labs(title = "Smoothed Poll Percentage Trend Over Time by Candidate",
+       x = "Date",
+       y = "Poll Percentage",
+       color = "Candidate") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "top"
+  )
+
+```
+
+## Analyzing the Data with a Stacked Area Plot
+
+We will now analyze the data using a stacked area plot to visualize the overall distribution of poll percentages over time.
+
+```{r data-analysis-stacked-area-plot}
+
+# Reshape the data for visualization
+
+polls_long <- polls_clean %>%
+  pivot_longer(cols = starts_with("rawpoll_"), names_to = "candidate", values_to = "poll_percentage") %>%
+  mutate(candidate = str_replace(candidate, "rawpoll_", ""))  # Clean up candidate names
+
+# Convert date columns to Date type for plotting
+
+polls_long$startdate <- as.Date(polls_long$startdate, format = "%m/%d/%Y")
+
+# Aggregate data by week to reduce clutter
+
+polls_weekly <- polls_long %>%
+  group_by(candidate, week = cut(startdate, "week")) %>%
+  summarise(avg_poll_percentage = mean(poll_percentage, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(week = as.Date(week))
+
+# Create a stacked area plot of poll percentages over time for each candidate
+
+ggplot(polls_weekly, aes(x = week, y = avg_poll_percentage, fill = candidate)) +
+  geom_area() +
+  theme_minimal() +
+  scale_fill_manual(values = c("clinton" = "blue", "trump" = "red", "johnson" = "gold")) +
+  scale_y_continuous(labels = percent_format(scale = 1)) +  # Format y-axis as percentages
+  labs(title = "Stacked Area Plot of Poll Percentage Over Time by Candidate",
+       x = "Date",
+       y = "Poll Percentage",
+       fill = "Candidate") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "top"
+  )
+
+```
+
+## Analyzing the Data with a Grouped Bar Plot
+
+We will now analyze the data using a grouped bar plot to compare the poll percentages of different candidates over time.
+
+```{r data-analysis-grouped-bar-plot}
+
+# Reshape the data for visualization
+
+polls_long <- polls_clean %>%
+  pivot_longer(cols = starts_with("rawpoll_"), names_to = "candidate", values_to = "poll_percentage") %>%
+  mutate(candidate = str_replace(candidate, "rawpoll_", ""))  # Clean up candidate names
+
+# Convert date columns to Date type for plotting
+
+polls_long$startdate <- as.Date(polls_long$startdate, format = "%m/%d/%Y")
+
+# Aggregate data by week to reduce clutter
+
+polls_weekly <- polls_long %>%
+  group_by(candidate, week = cut(startdate, "week")) %>%
+  summarise(avg_poll_percentage = mean(poll_percentage, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(week = as.Date(week))
+
+# Create a grouped bar plot of poll percentages over time for each candidate
+
+ggplot(polls_weekly, aes(x = week, y = avg_poll_percentage, fill = candidate)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  scale_fill_manual(values = c("clinton" = "blue", "trump" = "red", "johnson" = "gold")) +
+  scale_y_continuous(labels = percent_format(scale = 1)) +  # Format y-axis as percentages
+  labs(title = "Grouped Bar Plot of Poll Percentage Over Time by Candidate",
+       x = "Date",
+       y = "Poll Percentage",
+       fill = "Candidate") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "top"
+  )
+
+```
+
+## Analyzing the Data with a Faceted Line Plot
+
+We will now analyze the data using a faceted line plot to compare the poll percentages of different candidates over time.
+
+```{r data-analysis-faceted-line-plot}
+
+# Reshape the data for visualization
+
+polls_long <- polls_clean %>%
+  pivot_longer(cols = starts_with("rawpoll_"), names_to = "candidate", values_to = "poll_percentage") %>%
+  mutate(candidate = str_replace(candidate, "rawpoll_", ""))  # Clean up candidate names
+
+# Convert date columns to Date type for plotting
+
+polls_long$startdate <- as.Date(polls_long$startdate, format = "%m/%d/%Y")
+
+# Aggregate data by week to reduce clutter
+
+polls_weekly <- polls_long %>%
+  group_by(candidate, week = cut(startdate, "week")) %>%
+  summarise(avg_poll_percentage = mean(poll_percentage, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(week = as.Date(week))
+
+# Create a faceted line plot of poll percentages over time for each candidate
+
+ggplot(polls_weekly, aes(x = week, y = avg_poll_percentage, color = candidate)) +
+  geom_line(size = 1.2) +
+  facet_wrap(~candidate, scales = "free_y") +
+  theme_minimal() +
+  scale_color_manual(values = c("clinton" = "blue", "trump" = "red", "johnson" = "gold")) +
+  scale_y_continuous(labels = percent_format(scale = 1)) +  # Format y-axis as percentages
+  labs(title = "Faceted Line Plot of Poll Percentage Over Time by Candidate",
+       x = "Date",
+       y = "Poll Percentage",
+       color = "Candidate") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "top"
+  )
+
+```
+
+## Analyzing the Data with a Faceted Area Plot
+
+We will now analyze the data using a faceted area plot to compare the poll percentages of different candidates over time.
+
+```{r data-analysis-faceted-area-plot}
+
+# Reshape the data for visualization
+
+polls_long <- polls_clean %>%
+  pivot_longer(cols = starts_with("rawpoll_"), names_to = "candidate", values_to = "poll_percentage") %>%
+  mutate(candidate = str_replace(candidate, "rawpoll_", ""))  # Clean up candidate names
+
+# Convert date columns to Date type for plotting
+
+polls_long$startdate <- as.Date(polls_long$startdate, format = "%m/%d/%Y")
+
+# Aggregate data by week to reduce clutter
+
+polls_weekly <- polls_long %>%
+  group_by(candidate, week = cut(startdate, "week")) %>%
+  summarise(avg_poll_percentage = mean(poll_percentage, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(week = as.Date(week))
+
+# Create a faceted area plot of poll percentages over time for each candidate
+
+ggplot(polls_weekly, aes(x = week, y = avg_poll_percentage, fill = candidate)) +
+  geom_area() +
+  facet_wrap(~candidate, scales = "free_y") +
+  theme_minimal() +
+  scale_fill_manual(values = c("clinton" = "blue", "trump" = "red", "johnson" = "gold")) +
+  scale_y_continuous(labels = percent_format(scale = 1)) +  # Format y-axis as percentages
+  labs(title = "Faceted Area Plot of Poll Percentage Over Time by Candidate",
+       x = "Date",
+       y = "Poll Percentage",
+       fill = "Candidate") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "top"
+  )
+
+```
+
+## Analyzing the Data with a Faceted Bar Plot
+
+We will now analyze the data using a faceted bar plot to compare the poll percentages of different candidates over time.
+
+```{r data-analysis-faceted-bar-plot}
+
+# Reshape the data for visualization
+
+polls_long <- polls_clean %>%
+  pivot_longer(cols = starts_with("rawpoll_"), names_to = "candidate", values_to = "poll_percentage") %>%
+  mutate(candidate = str_replace(candidate, "rawpoll_", ""))  # Clean up candidate names
+
+# Convert date columns to Date type for plotting
+
+polls_long$startdate <- as.Date(polls_long$startdate, format = "%m/%d/%Y")
+
+# Aggregate data by week to reduce clutter
+
+polls_weekly <- polls_long %>%
+  group_by(candidate, week = cut(startdate, "week")) %>%
+  summarise(avg_poll_percentage = mean(poll_percentage, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(week = as.Date(week))
+
+# Create a faceted bar plot of poll percentages over time for each candidate
+
+ggplot(polls_weekly, aes(x = week, y = avg_poll_percentage, fill = candidate)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~candidate, scales = "free_y") +
+  theme_minimal() +
+  scale_fill_manual(values = c("clinton" = "blue", "trump" = "red", "johnson" = "gold")) +
+  scale_y_continuous(labels = percent_format(scale = 1)) +  # Format y-axis as percentages
+  labs(title = "Faceted Bar Plot of Poll Percentage Over Time by Candidate",
+       x = "Date",
+       y = "Poll Percentage",
+       fill = "Candidate") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "top"
+  )
+
+```
+
+## Analyzing the Data with a Heatmap
+
+We will now analyze the data using a heatmap to visualize the poll percentages of different candidates over time.
+
+```{r data-analysis-heatmap}
+
+# Reshape the data for visualization
+
+polls_long <- polls_clean %>%
+  pivot_longer(cols = starts_with("rawpoll_"), names_to = "candidate", values_to = "poll_percentage") %>%
+  mutate(candidate = str_replace(candidate, "rawpoll_", ""))  # Clean up candidate names
+
+# Convert date columns to Date type for plotting
+
+polls_long$startdate <- as.Date(polls_long$startdate, format = "%m/%d/%Y")
+
+# Aggregate data by week to reduce clutter
+
+polls_weekly <- polls_long %>%
+  group_by(candidate, week = cut(startdate, "week")) %>%
+  summarise(avg_poll_percentage = mean(poll_percentage, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(week = as.Date(week))
+
+# Create a heatmap of poll percentages over time for each candidate
+
+ggplot(polls_weekly, aes(x = week, y = candidate, fill = avg_poll_percentage)) +
+  geom_tile() +
+  theme_minimal() +
+  scale_fill_viridis_c() +
+  labs(title = "Heatmap of Poll Percentage Over Time by Candidate",
+       x = "Date",
+       y = "Candidate",
+       fill = "Poll Percentage") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "right"
+  )
+
+```
+
+## Analyzing the Data with a Box Plot
+
+We will now analyze the data using a box plot to compare the distribution of poll percentages for different candidates.
+
+```{r data-analysis-box-plot}
+
+# Reshape the data for visualization
+
+polls_long <- polls_clean %>%
+  pivot_longer(cols = starts_with("rawpoll_"), names_to = "candidate", values_to = "poll_percentage") %>%
+  mutate(candidate = str_replace(candidate, "rawpoll_", ""))  # Clean up candidate names
+
+# Convert date columns to Date type for plotting
+
+polls_long$startdate <- as.Date(polls_long$startdate, format = "%m/%d/%Y")
+
+# Aggregate data by week to reduce clutter
+
+polls_weekly <- polls_long %>%
+  group_by(candidate, week = cut(startdate, "week")) %>%
+  summarise(avg_poll_percentage = mean(poll_percentage, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(week = as.Date(week))
+
+# Create a box plot of poll percentages over time for each candidate
+
+ggplot(polls_weekly, aes(x = candidate, y = avg_poll_percentage, fill = candidate)) +
+  geom_boxplot() +
+  theme_minimal() +
+  scale_fill_manual(values = c("clinton" = "blue", "trump" = "red", "johnson" = "gold")) +
+  scale_y_continuous(labels = percent_format(scale = 1)) +  # Format y-axis as percentages
+  labs(title = "Box Plot of Poll Percentage Over Time by Candidate",
+       x = "Candidate",
+       y = "Poll Percentage",
+       fill = "Candidate") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "none"
+  )
+
+```
+
+## Analyzing the Data with a Violin Plot
+
+We will now analyze the data using a violin plot to compare the distribution of poll percentages for different candidates.
+
+```{r data-analysis-violin-plot}
+
+# Reshape the data for visualization
+
+polls_long <- polls_clean %>%
+  pivot_longer(cols = starts_with("rawpoll_"), names_to = "candidate", values_to = "poll_percentage") %>%
+  mutate(candidate = str_replace(candidate, "rawpoll_", ""))  # Clean up candidate names
+
+# Convert date columns to Date type for plotting
+
+polls_long$startdate <- as.Date(polls_long$startdate, format = "%m/%d/%Y")
+
+# Aggregate data by week to reduce clutter
+
+polls_weekly <- polls_long %>%
+  group_by(candidate, week = cut(startdate, "week")) %>%
+  summarise(avg_poll_percentage = mean(poll_percentage, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(week = as.Date(week))
+
+# Create a violin plot of poll percentages over time for each candidate
+
+ggplot(polls_weekly, aes(x = candidate, y = avg_poll_percentage, fill = candidate)) +
+  geom_violin() +
+  theme_minimal() +
+  scale_fill_manual(values = c("clinton" = "blue", "trump" = "red", "johnson" = "gold")) +
+  scale_y_continuous(labels = percent_format(scale = 1)) +  # Format y-axis as percentages
+  labs(title = "Violin Plot of Poll Percentage Over Time by Candidate",
+       x = "Candidate",
+       y = "Poll Percentage",
+       fill = "Candidate") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "none"
+  )
+
+```
+
+## Analyzing the Data with a Density Plot
+
+We will now analyze the data using a density plot to compare the distribution of poll percentages for different candidates.
+
+```{r data-analysis-density-plot}
+
+# Reshape the data for visualization
+
+polls_long <- polls_clean %>%
+  pivot_longer(cols = starts_with("rawpoll_"), names_to = "candidate", values_to = "poll_percentage") %>%
+  mutate(candidate = str_replace(candidate, "rawpoll_", ""))  # Clean up candidate names
+
+# Convert date columns to Date type for plotting
+
+polls_long$startdate <- as.Date(polls_long$startdate, format = "%m/%d/%Y")
+
+# Aggregate data by week to reduce clutter
+
+polls_weekly <- polls_long %>%
+  group_by(candidate, week = cut(startdate, "week")) %>%
+  summarise(avg_poll_percentage = mean(poll_percentage, na.rm = TRUE)) %>%
+  ungroup() %>%
+  mutate(week = as.Date(week))
+
+# Create a density plot of poll percentages over time for each candidate
+
+ggplot(polls_weekly, aes(x = avg_poll_percentage, fill = candidate)) +
+  geom_density(alpha = 0.5) +
+  theme_minimal() +
+  scale_fill_manual(values = c("clinton" = "blue", "trump" = "red", "johnson" = "gold")) +
+  labs(title = "Density Plot of Poll Percentage Over Time by Candidate",
+       x = "Poll Percentage",
+       fill = "Candidate") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.position = "top"
+  )
+
+```
+
+## Analyzing the States with the Highest Poll Percentages
+
+We will now analyze the states with the highest poll percentages for each candidate.
+
+```{r maps}
+
+# Summarize the poll data to get the candidate leading in each state
+polls_state_summary <- polls_data %>%
+  filter(!is.na(state)) %>%  # Ensure state data is not missing
+  group_by(state) %>%
+  summarise(
+    clinton_avg = mean(rawpoll_clinton, na.rm = TRUE),
+    trump_avg = mean(rawpoll_trump, na.rm = TRUE)
+  ) %>%
+  mutate(
+    leading_candidate = case_when(
+      clinton_avg > trump_avg ~ "Clinton",
+      trump_avg > clinton_avg ~ "Trump",
+      TRUE ~ "Tie"
+    )
+  )
+
+# Get U.S. states map data
+states_map <- map_data("state")
+
+# Prepare the data for merging
+polls_state_summary$state <- tolower(polls_state_summary$state)
+states_map$region <- tolower(states_map$region)
+
+# Merge the summarized poll data with map data
+map_data <- left_join(states_map, polls_state_summary, by = c("region" = "state"))
+
+# Plot the map
+ggplot(map_data, aes(x = long, y = lat, group = group, fill = leading_candidate)) +
+  geom_polygon(color = "white") +
+  scale_fill_manual(values = c("Clinton" = "blue", "Trump" = "red", "Tie" = "gray")) +
+  theme_minimal() +
+  labs(
+    title = "Leading Candidate by State",
+    fill = "Candidate"
+  ) +
+  coord_map()
+
+```
+
+## Findings
+
+The visualizations show the trends in poll percentages for different candidates over time. The faceted line plot and faceted area plot provide a detailed view of how each candidate's poll percentage has evolved over time. The heatmap and box plot offer insights into the distribution of poll percentages for each candidate. The map visualization highlights the states where each candidate is leading based on the poll data. The data also shows that the leading candidate varies by state, with some states favoring Clinton, others favoring Trump, and some showing a tie. The visualizations provide a comprehensive overview of the poll data and help identify patterns and trends in the data. The analysis can be further extended by exploring additional variables and conducting more in-depth statistical analysis.
+
+## Conclusion
+
+This example demonstrates how to use TidyVerse functions to clean, summarize, and visualize data using the `dplyr` and `ggplot2` packages. The process makes it easy to transform raw data into insightful visualizations and summaries. By leveraging the power of the TidyVerse, analysts can efficiently explore and analyze complex datasets, gaining valuable insights and informing data-driven decisions. The flexibility and ease of use of the TidyVerse tools make them essential for data analysis and visualization tasks. Unfortunately, we know that Clinton lost the election and the forecasts were biased towards the Democrats. I believe that the data was not enough to predict the outcome of the election, and should gather data similar to how [RealClear Polling](https://www.realclearpolling.com/) projects elections and polls.
+
